@@ -19,7 +19,7 @@ RESULT=$(grep -c '168.192' /home/pi/scripts/temp2 2>/dev/null)  #counts the numb
       CURRENTTIME=$(date +%s)
       TIMEDIFF=$(expr "$CURRENTTIME" - "$TIMESTAMPLASTMODIFIED")
 
-  if [ "$TIMEDIFF" -gt "3600" ]; then   #checks if it has been more than an hour and if so, sends push notification
+  if [ "$TIMEDIFF" -gt "3600" ]; then   #checks if it has been more than an hour and if so, sends push notification - set to what you prefer
     curl -s \
     --form-string "token=<your pushover api token>" \
     --form-string "user=<your pushover user key>" \
