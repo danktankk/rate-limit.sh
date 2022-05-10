@@ -1,15 +1,17 @@
 #!/bin/bash
 
-cat /dev/null > temp  #create this file
-cat /dev/null > temp2  #create this file
+cat /dev/null > temp  #create this file first
+cat /dev/null > temp2  #create this file first
+cat /dev/null > temp3  #create this file first
 
-grep -w 'Rate-limiting' /var/log/pihole.log 1>/home/pi/scripts/temp  #searches for a match and stores in temp file
+sed -n "/^${yesterday}/,/^${today}/ p" /var/log/pihole.log 1>/home/pi/scripts/temp  #search the log to 24 hours back
+grep -w 'Rate-limiting' /home/pi/scripts/temp 1>/home/pi/scripts/temp2  #searches for a match and stores in a temp file
 
-RESULT=$(grep -c '168.192' /home/pi/scripts/temp 2>/dev/null)  #counts the number of times '168.192' was found in temp file
+RESULT=$(grep -c '168.192' /home/pi/scripts/temp2 2>/dev/null)  #counts the number of times '168.192' was found in temp file
 
   if [ "$RESULT" -gt "0" ]; then  #if >0 results are found then continue
-    RESULT=$(grep -E -o '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.168.192' /home/pi/scripts/temp | sort -t . -k 2,2n -k 1,1n | uniq 1>/home/pi/scripts/temp2)
-    RESULT=$(sed -E 's/([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+).*/\4.\3.\2.\1/' /home/pi/scripts/temp2)
+    RESULT=$(grep -E -o '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.168.192' /home/pi/scripts/temp | sort -t . -k 2,2n -k 1,1n | uniq 1>/home/pi/scripts/temp3)
+    RESULT=$(sed -E 's/([0-9]+)\.([0-9]+)\.([0-9]+)\.([0-9]+).*/\4.\3.\2.\1/' /home/pi/scripts/temp3)
     IP=$(echo "$RESULT" | awk '{print " Client " $1 " has been rate-limited by PiHole."}')  #push notification message
 
       TIMESTAMPFILE="/var/log/timestamp.txt"
