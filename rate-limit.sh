@@ -4,7 +4,7 @@ cat /dev/null > temp  #create this file first
 cat /dev/null > temp2  #create this file first
 cat /dev/null > temp3   #create this file first
 
-sed -n "/^${yesterday}/,/^${today}/ p" /var/log/pihole.log 1>/home/pi/scripts/temp  #search the log to 24 hours back
+sed -n "/^${yesterday}/,/^${today}/ p" /var/log/pihole.log 1>/home/pi/scripts/temp  #only notes log messages within the last 24 hours
 grep -w 'Rate-limiting' /home/pi/scripts/temp 1>/home/pi/scripts/temp2  #searches for a match and stores in a temp file
 
 RESULT=$(grep -c '168.192' /home/pi/scripts/temp2 2>/dev/null)  #counts the number of times '168.192' was found in temp file
